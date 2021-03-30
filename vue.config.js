@@ -8,7 +8,7 @@ function resolve(dir) {
 const port = 9527;
 
 module.exports = {
-  publicPath: "/",
+  publicPath: "./",
   outputDir: "dist",
   assetsDir: "static",
   lintOnSave: process.env.NODE_ENV === "development",
@@ -19,6 +19,16 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    }
+  },
+  pages: {
+    index: {
+      entry: './src/views/main.ts', // page 的入口
+      template: './public/index.html', // 模板来源
+      filename: 'index.html', // 在 dist/index.html 的输出
+      title: 'Index Page',
+      // 在这个页面中包含的块，默认情况下会包含,提取出来的通用 chunk 和 vendor chunk。
+      chunks: ['chunk-libs', 'chunk-ant', 'chunk-common', 'index']
     }
   },
   configureWebpack: config => {
@@ -39,31 +49,28 @@ module.exports = {
     config.plugins.delete("preload"); // TODO: need test
     config.plugins.delete("prefetch"); // TODO: need test
   
-    config.when(process.env.NODE_ENV !== "development", config => {
-      config.optimization.splitChunks({
-        chunks: "all",
-        cacheGroups: {
-          libs: {
-            name: "chunk-libs",
-            test: /[\\/]node_modules[\\/]/,
-            priority: 10,
-            chunks: "initial" // only package third parties that are initially dependent
-          },
-          antUI: {
-            name: "chunk-ant", // split elementUI into a single package
-            priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-            test: /[\\/]node_modules[\\/]_?ant-design-vue(.*)/ // in order to adapt to cnpm
-          },
-          commons: {
-            name: "chunk-commons",
-            test: resolve("src/components"), // can customize your rules
-            minChunks: 3, //  minimum common number
-            priority: 5,
-            reuseExistingChunk: true
-          }
+    config.optimization.splitChunks({
+      chunks: "all",
+      cacheGroups: {
+        libs: {
+          name: "chunk-libs",
+          test: /[\\/]node_modules[\\/]/,
+          priority: 10,
+          chunks: "initial" // only package third parties that are initially dependent
+        },
+        ant: {
+          name: "chunk-ant", // split elementUI into a single package
+          priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+          test: /[\\/]node_modules[\\/]_?ant-design-vue(.*)/ // in order to adapt to cnpm
+        },
+        common: {
+          name: `chunk-common`,
+          minChunks: 2,
+          priority: -20,
+          chunks: 'initial',
+          reuseExistingChunk: true
         }
-      });
-      config.optimization.runtimeChunk("single");
+      }
     });
   }
 }
