@@ -46,8 +46,16 @@ module.exports = {
     }
   },
   chainWebpack(config) {
-    config.plugins.delete("preload"); // TODO: need test
-    config.plugins.delete("prefetch"); // TODO: need test
+    config.plugins.delete("preload");
+    config.plugins.delete("prefetch");
+
+    // TODO: 图片压缩
+    config.module
+      .rule('images')
+      .use('image-webpack-loader')
+      .loader('image-webpack-loader')
+      .options({ bypassOnDebug: true })
+      .end()
   
     config.optimization.splitChunks({
       chunks: "all",
