@@ -10,7 +10,7 @@ function resolve(dir) {
 const port = 9527;
 
 module.exports = {
-  publicPath: "./",
+  publicPath: "/",
   outputDir: "dist",
   assetsDir: "static",
   lintOnSave: process.env.NODE_ENV === "development",
@@ -58,7 +58,7 @@ module.exports = {
             },
             headless: false,
             // 在 main.js 中 document.dispatchEvent(new Event('render-event'))，两者的事件名称要对应上。
-            // renderAfterDocumentEvent: 'render-event'
+            renderAfterDocumentEvent: 'render-event'
           })
         }),
       );
@@ -68,13 +68,13 @@ module.exports = {
     config.plugins.delete("preload");
     config.plugins.delete("prefetch");
 
-    config.module
-      .rule('images')
-      .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
-      .use('image-webpack-loader')
-      .loader('image-webpack-loader')
-      .options({ bypassOnDebug: true })
-      .end()
+    // config.module
+    //   .rule('images')
+    //   .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
+    //   .use('image-webpack-loader')
+    //   .loader('image-webpack-loader')
+    //   .options({ bypassOnDebug: true })
+    //   .end()
   
     config.optimization.splitChunks({
       chunks: "all",
