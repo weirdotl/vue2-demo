@@ -15,4 +15,7 @@ new Vue({
   router,
   store,
   render: (h) => h(App),
+  mounted() {
+    document.dispatchEvent(new Event('custom-render-trigger'));
+  }
 }).$mount('#app');
